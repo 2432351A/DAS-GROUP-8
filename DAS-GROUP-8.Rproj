@@ -28,48 +28,48 @@ summary(mov)
 mov_1 <- na.omit(mov)
 
 # 1. data summary
-summary(mov_2)
+summary(mov_1)
 
 # 2. univariate analysis
 # histogram
-ggplot(mov_2, aes(x=rating)) + 
+ggplot(mov_1, aes(x=rating)) + 
   geom_histogram(binwidth=0.5, fill="blue", color="black") +
   labs(title="Rating Distribution", x="IMDB Rating", y="Count")
 
 # boxplot - budget
-ggplot(mov_2, aes(y=budget)) + 
+ggplot(mov_1, aes(y=budget)) + 
   geom_boxplot(fill="tomato") +
   labs(title="Budget Boxplot", y="Budget (in $10M)")
 
 # bar chart - genre
-ggplot(mov_2, aes(x=genre)) + 
+ggplot(mov_1, aes(x=genre)) + 
   geom_bar(fill="lightgreen") +
   theme(axis.text.x = element_text(angle=45, hjust=1)) + # Rotating x-axis labels
   labs(title="Movie Genre Frequency", x="Genre", y="Count")
 
 # 3. bivariate analysis
 # Scatterplot - Budget & rating
-ggplot(mov_2, aes(x=budget, y=rating)) +
+ggplot(mov_1, aes(x=budget, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
   scale_color_brewer(palette="Set1") +
   labs(title="Budget vs. Rating by Genre", x="Budget", y="IMDB Rating")
 
 # Correlation coefficient matrix
-numerical_mov_2 <- mov_2 %>% select(budget, rating, votes, length) 
-cor_matrix <- cor(numerical_mov_2, use="complete.obs") 
+numerical_mov_1 <- mov_1 %>% select(budget, rating, votes, length) 
+cor_matrix <- cor(numerical_mov_1, use="complete.obs") 
 corrplot(cor_matrix, method="circle") 
 
 # 4. multivariate analysis
-pairs(~budget+rating+votes+length, data=mov_2)
-mov_2$genre <- as.factor(mov_2$genre)
-colors <- rainbow(length(levels(mov_2$genre)))
-genre_colors <- colors[as.numeric(mov_2$genre)]
-pairs(~budget+rating+votes+length, data=mov_2, col=genre_colors)
+pairs(~budget+rating+votes+length, data=mov_1)
+mov_1$genre <- as.factor(mov_1$genre)
+colors <- rainbow(length(levels(mov_1$genre)))
+genre_colors <- colors[as.numeric(mov_1$genre)]
+pairs(~budget+rating+votes+length, data=mov_1, col=genre_colors)
 
 # 5. hypothesis analysis
 # We want to test whether there is a significant difference in film ratings across genres
 library(stats)
-kruskal.test(rating ~ genre, data=mov_2) # Kruskal-Wallis test
+kruskal.test(rating ~ genre, data=mov_1) # Kruskal-Wallis test
 
 
 
