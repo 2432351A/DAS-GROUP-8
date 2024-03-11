@@ -55,9 +55,9 @@ ggplot(mov_2, aes(x=budget, y=rating)) +
   labs(title="Budget vs. Rating by Genre", x="Budget", y="IMDB Rating")
 
 # Correlation coefficient matrix
-numerical_mov_2 <- mov_2 %>% select(budget, rating, votes, length) # 选择数值型列
-cor_matrix <- cor(numerical_mov_2, use="complete.obs") # 计算相关系数
-corrplot(cor_matrix, method="circle") # 可视化相关系数矩阵
+numerical_mov_2 <- mov_2 %>% select(budget, rating, votes, length) 
+cor_matrix <- cor(numerical_mov_2, use="complete.obs") 
+corrplot(cor_matrix, method="circle") 
 
 # 4. multivariate analysis
 pairs(~budget+rating+votes+length, data=mov_2)
