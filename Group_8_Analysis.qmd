@@ -44,6 +44,8 @@ colnames(dataNEW) <- c("FILM ID", "YEAR RELEASED", "LENGTH", "BUDGET" , "VOTES" 
 
 # Introduction {#sec-Intro}
 
+This analysis aims to investigate the properties of films that impact their IMDB ratings, specifically focusing on whether certain characteristics contribute to films being rated greater than 7 or not. Through a comprehensive exploration of variables such as budget, genre, length, and votes, this study seeks to uncover potential trends and correlations that shed light on the intricate relationship between film attributes and viewer perception.
+
 # Exploratory Data Analysis {#sec-EDA}
 
 # Formal Data Analysis {#sec-FDA}
@@ -60,3 +62,7 @@ films
 glm_model <- glm(GREAT ~ film_id + year + length + budget + votes + genre , data = films , family = binomial)
 summary(glm_model)
 ```
+
+#Conclusion
+
+Based on the analysis above, we found that various factors influence the IMDb rating of films rated greater than 7. While there is no significant correlation between budget and rating, higher budgets tend to attract more viewer engagement, as seen through a positive correlation between votes and budget. The genre of a film plays a crucial role in determining its IMDb rating, as indicated by the Kruskal-Wallis test showing a significant difference in ratings across different genres. Additionally, the distribution of ratings exhibits a bimodal trend, suggesting that films are either highly rated or receive average ratings, with fewer falling in the intermediate range
