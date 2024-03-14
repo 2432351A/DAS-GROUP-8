@@ -43,7 +43,7 @@ colnames(dataNEW) <- c("FILM ID", "YEAR RELEASED", "LENGTH", "BUDGET" , "VOTES" 
 ```
 
 # Introduction {#sec-Intro}
-This analysis aims to investigate the properties of films that impact their IMDB ratings, specifically focusing on whether certain characteristics contribute to films being rated greater than 7 or not. Through a comprehensive exploration of variables such as budget, genre, length, and votes, this study seeks to uncover potential trends and correlations that shed light on the intricate relationship between film attributes and viewer perception.
+The IMDB film database provides a rich source of information on various films. This data set offers valuable insights into the factors influencing a film's critical reception. In response to a film producer's inquiry, we conducted an in-depth analysis using a Generalized Linear Model to investigate the properties of films that influence whether they are rated greater than 7 on IMDB. Through the analysis, we found compelling evidence regarding the impact of different variables. Specifically, we observed that budget, genre, film length, and release year play significant roles in determining a film's reception.
 
 # Exploratory Data Analysis {#sec-EDA}
 
