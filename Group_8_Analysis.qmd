@@ -25,182 +25,149 @@ library(patchwork)
 library(gridExtra)
 library(moderndive)
 
+|               |
+|---------------|
+| itle: "flims" |
+| ormat: html   |
+| ditor: visual |
 
-data <- read.csv("dataset08.csv")
-data
-films <- na.omit(data)
-
-
-films
-```
+## **Data Summary**
 
 ```{r}
-#| label: data
-data <- read.csv("dataset08.csv")
-dataNEW <- na.omit(data)
-colnames(dataNEW) <- c("FILM ID", "YEAR RELEASED", "LENGTH", "BUDGET" , "VOTES" ,"GENRE" , "RATING") 
-
-```
-
-# Introduction {#sec-Intro}
-
-# Exploratory Data Analysis {#sec-EDA}
-Data preprocessing
-
-{r}
-# import
-library(tidyverse) 
-
-# read data
+library(tidyverse)
+library(gt)
+library(corrplot)
 mov <- read_csv("C:/Users/admin/Desktop/dataset08.csv")
 
-# basic instructure
-str(mov)
-summary(mov)
-
 # solve NA (delete the NA rows)
 mov_1 <- na.omit(mov)
 
 # 1. data summary
+library(gt)
 summary(mov_1)
+mov_1 %>%
+  select(-film_id) %>%
+  select(where(is.numeric)) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Value") %>%
+  group_by(Variable) %>%
+  summarise(
+    'Mean' = mean(Value),
+    'Median' = median(Value),
+    'St.Dev' = sd(Value),
+    'Min' = min(Value),
+    'Max' = max(Value),
+    'IQR' = IQR(Value),
+  ) %>%
+  gt() %>%
+  fmt_number(decimals = 2) %>%
+  cols_label(
+    Variable = "Variable",
+    Mean = "Mean",
+    Median = "Median",
+    St.Dev = "Std. Dev",
+    Min = "Minimum",
+    Max = "Maximum",
+    IQR = "IQR"
+  )
+```
 
-Data Summary
+## **Histograms for Numeric Variables**
 
-{r}
-# basic instructure
-str(mov)
-summary(mov)
-
-# solve NA (delete the NA rows)
-mov_1 <- na.omit(mov)
-
-# 1. data summary
-summary(mov_1)
-
-Histograms for Numeric Variables
-
-{r}
+```{r}
 #univariate analysis
 # histogram
-ggplot(mov_1, aes(x=rating)) + 
-  geom_histogram(binwidth=0.5, fill="blue", color="black") +
-  labs(title="Rating Distribution", x="IMDB Rating", y="Count")
 
-1.The film's ratings are concentrated between 5 and 8, which is a common rating range for most films.
+ggplot(mov_1, aes(x = rating)) + 
+  geom_histogram(binwidth = 0.5, fill = "#69b3a2", color = "#404040") +  
+  labs(title = "Rating Distribution", x = "IMDB Rating", y = "Count")
+```
 
-2.The distribution of ratings shows a bimodal trend, with one peak occurring at about 6 and the other at about 7.5. This could mean that films are either getting above average ratings or higher ratings, with fewer films getting intermediate ratings.
+1.The distribution of ratings shows a bimodal trend, with one peak occurring at about 3.8 and the other at about 7.6. This could mean that films are either getting above average ratings or higher ratings, with fewer films getting intermediate ratings.
 
 3.Relatively few films received very low (below 2.5) or very high (close to 10) ratings.
 
 4.The number of highly rated films seems to be greater than the number of lowly rated films, probably because IMDB users are more inclined to rate films they like.
 
-Boxplots for Numeric Variables
+## **Boxplots for Numeric Variables**
 
-{r}
+```{r}
 # boxplot - budget
-ggplot(mov_1, aes(y=budget)) + 
-  geom_boxplot(fill="tomato") +
-  labs(title="Budget Boxplot", y="Budget (in $10M)")
+p2 <- ggplot(mov_1, aes(x = genre, y = rating, fill = genre)) + 
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set3") +  
+  labs(x = "Genre", y = "Rating", title = "Rating by Genre")
+print(p2)
+```
 
-Most of the film's budget is concentrated inside the box.
+## **Bar chart - genre**
 
-Bivariate Analysis
+```{r}
+mov_1$rating_category <- ifelse(mov_1$rating >= 7, '7+', 'Below 7')
+ggplot(mov_1, aes(x=genre, fill=rating_category)) +
+  geom_bar() +
+  scale_fill_manual(values=c('7+' = 'blue', 'Below 7' = 'skyblue')) +
+  theme(axis.text.x = element_text(angle=45, hjust=1)) +
+  labs(title="Movie Genre Frequency by Rating Category", x="Genre", y="Count")
+```
 
-{r}
-# bar chart - genre
-ggplot(mov_1, aes(x=genre)) + 
-  geom_bar(fill="lightgreen") +
-  theme(axis.text.x = element_text(angle=45, hjust=1)) + # Rotating x-axis labels
-  labs(title="Movie Genre Frequency", x="Genre", y="Count")
+This bar chart shows the frequency distribution of different film genres. According to the chart: The Action and Drama genres have the highest number of films, with Drama having the highest number, followed closely by Action. Documentary and Comedy are relatively few in number.Animation, Romance and Short films are the least numerous, with Short films being the lowest.
 
-This bar chart shows the frequency distribution of different film genres. We can see through the chart: The Action and Drama genres have the highest number of films, with Drama having the highest number, followed closely by Action. Documentary and Comedy are relatively few in number.Animation, Romance and Short films are the least numerous, with Short films being the lowest.
+## Scatter plots
 
-Bivariate analysis
-
-{r}
+```{r}
 # Scatterplot - Budget & rating
 ggplot(mov_1, aes(x=budget, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
-  scale_color_brewer(palette="Set1") +
+  scale_color_brewer(palette="Set2") +
   labs(title="Budget vs. Rating by Genre", x="Budget", y="IMDB Rating")
+ggplot(mov_1, aes(x=length, y=rating)) +
+  geom_point(aes(color=genre), alpha=0.5) + 
+  scale_color_brewer(palette="Set2") +
+  labs(title="Length vs. Rating by Genre", x="length", y="IMDB Rating")
+ggplot(mov_1, aes(x=votes, y=rating)) +
+  geom_point(aes(color=genre), alpha=0.5) + 
+  scale_color_brewer(palette="Set2") +
+  labs(title="Votes vs. Rating by Genre", x="votes", y="IMDB Rating")
+ggplot(mov_1, aes(x=year, y=rating)) +
+  geom_point(aes(color=genre), alpha=0.5) + 
+  scale_color_brewer(palette="Set2") +
+  labs(title="Year vs. Rating by Genre", x="year", y="IMDB Rating")
 
-Budget-rating relationship: the graph shows the distribution of different types of films (indicated by different colours) in terms of budget and IMDB rating. Overall, there is no obvious direct relationship between budget and IMDB rating, even for films with higher budgets, their ratings cover a wide range from low to high.
+```
 
-Genre distribution: different genres of films are more widely distributed in terms of budgets and ratings, with no obvious concentration trend. For example, comedies (green dots) and dramas (red dots) are widely distributed throughout the chart.
+### Budget-rating relationship
 
-Budget ranges: the budgets of most films seem to be concentrated in the lower ranges, even across genres. There are fewer films with higher budgets, and the ratings of these films do not increase significantly as a result of the increase in budget.
+The graph shows the distribution of different types of films (indicated by different colours) in terms of budget and IMDB rating. Overall, there is no obvious direct relationship between budget and IMDB rating, even for films with higher budgets, their ratings cover a wide range from low to high.
 
-RATING RANGE: IMDB ratings have a wide range, from close to 2 to over 8. While some films have higher ratings, this is not limited to films with high budgets.
 
-Outliers: Some anomalies can also be observed in the graph, such as some films with very low budgets but high ratings, or films with very high budgets but poor ratings.
 
-Correlation coefficient matrix
+## Correlation coefficient matrix
 
-{r}
-numerical_mov_1 <- mov_1 %>% select(budget, rating, votes, length) 
+```{r}
+par(mfrow=c(1,1), mar=c(0,0,2,0))  
+numerical_mov_1 <- mov_1 %>% select(rating, year, budget, votes, length) 
 cor_matrix <- cor(numerical_mov_1, use="complete.obs") 
-corrplot(cor_matrix, method="circle") 
+corrplot(cor_matrix, method="circle", addCoef.col = "black",  # 添加黑色的颜色键
+         tl.cex = 0.7,            
+         cl.cex = 0.7,            
+         tl.srt = 0 )            
+```
 
-Votes and Budget: There seems to be a moderately strong positive correlation between votes and budget, suggesting that films with larger budgets might also receive more votes, possibly indicating higher viewer engagement or more extensive marketing campaigns.
+-   **Votes and Budget**: There seems to be a moderately strong positive correlation between votes and budget, suggesting that films with larger budgets might also receive more votes, possibly indicating higher viewer engagement or more extensive marketing campaigns.
 
-Votes and Length: There appears to be a small to moderate positive correlation, which might suggest that longer films tend to receive more votes. This could reflect a trend that more substantial, possibly more serious films garner more engagement.
+-   **Votes and Length**: There appears to be a small to moderate positive correlation, which might suggest that longer films tend to receive more votes. This could reflect a trend that more substantial, possibly more serious films garner more engagement.
 
-Rating and Length: There is a small negative correlation indicated by a light red color, suggesting that longer films might have slightly lower ratings, but the relationship seems weak.
+-   **Rating and Length**: There is a small negative correlation indicated by a light red color, suggesting that longer films might have slightly lower ratings, but the relationship seems weak.
 
-Rating and Budget: There seems to be very little to no correlation between budget and rating, indicating that a larger budget does not necessarily correspond to higher ratings.
+-   **Rating and Budget**: There seems to be very little to no correlation between budget and rating, indicating that a larger budget does not necessarily correspond to higher ratings.
 
-Other correlations: Other variable pairs show little to no correlation, as indicated by the very small circles or the neutral color.
+## Kruskal-Wallis Test
 
-Pairs Plot with Colors
-
-{r}
-mov_1$genre <- as.factor(mov_1$genre)
-colors <- rainbow(length(levels(mov_1$genre)))
-genre_colors <- colors[as.numeric(mov_1$genre)]
-pairs(~budget+rating+votes+length, data=mov_1, col=genre_colors)
-
-
-1.Variable distribution:
-
-Budget: There seem to be a few outliers in the budget data, suggesting that some films have much higher budgets than most.
-
-Ratings: The ratings seem to be relatively evenly distributed, although they may be slightly concentrated within a certain rating range.
-
-Votes: There is a long-tailed distribution of votes, suggesting that most films have only a small number of votes, while a few have a very large number of votes.
-
-Length: The distribution of lengths seems to be relatively concentrated, with most films probably within a certain range.
-
-2.Relationship between variables:
-
-Budget vs. Rating: there is no clear linear relationship between budget and rating. Nonetheless, films with higher budgets seem to have slightly higher ratings, but this trend is not very significant.
-
-Budget vs. Votes: Votes seem to have a tendency to increase as the budget increases, although this relationship is also not very significant.
-
-Length vs. Rating: there is no clear pattern of correlation between length and rating.
-
-Length vs. Votes: similar to Budget and Rating, the number of votes seems to increase slightly with length, though again this trend is not very significant.
-
-Kruskal-Wallis Test
-
-{r}
+```{r}
 # We want to test whether there is a significant difference in film ratings across genres
 library(stats)
 kruskal.test(rating ~ genre, data=mov_1) # Kruskal-Wallis test
-
-In a Kruskal-Wallis test, the null hypothesis is usually that the overall median is equal for all groups. Therefore, this very small p-value suggests that we have enough evidence to reject this null hypothesis to conclude that there is a significant difference in the ratings of different types of films. In other words, the genre of a film is likely to have an effect on its IMDb rating.
-
-
-# Formal Data Analysis {#sec-FDA}
-
-```{r}
-
-#WE CONVERT RATING TO BINARY VARIABLE
-
-films$GREAT <- ifelse(films$rating > 7 , 1 ,0)
-films
-
-#FIT GLM
-#NOTE WE ARE NOT INCLUDING film id as it obviously doesn't have an effect on the film's rating
-glm_model <- glm(GREAT ~ film_id + year + length + budget + votes + genre , data = films , family = binomial)
-summary(glm_model)
 ```
+
+According to the Kruskal-Wallis test above, this very small p-value suggests that we have enough evidence to reject this null hypothesis to conclude that there is a significant difference in the ratings of different types of films. In other words, the genre of a film is likely to have an effect on its IMDb rating.
+
