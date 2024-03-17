@@ -29,6 +29,10 @@ library(knitr)
 
 # Introduction {#sec-Intro}
 
+In the dynamic landscape of the film industry, understanding the factors that contribute to a film's success and critical acclaim is paramount for filmmakers and producers alike. As such, this analysis delves into the interplay between various film attributes and their influence on IMDb ratings, specifically focusing on films rated greater than 7. Leveraging data from the IMDB film database provided to us (dataset08.csv), encompassing key variables such as release year, duration of the film, budget (in millions \$), genre of the film (each film has only one in our case), and positive audience votes, we examine whether there exists a relationship between these properties and IMDb ratings.
+
+Through the help of Generalized Linear Models (GLMs), we aim to uncover the underlying patterns and drivers that shape IMDB's critics' perceptions and elevate certain films to achieving greatness. By conducting a comprehensive analysis (using exploratory methods and GLM modelling), we seek to provide actionable insights and strategic guidance to film producers, enabling them to navigate the multifaceted landscape of film production with precision and foresight, while also doing some examples with predictions.
+
 # Exploratory Data Analysis {#sec-EDA}
 
 
@@ -75,7 +79,6 @@ films %>%
 ## Histograms for Numeric Variables
 
 ```{r}
-#univariate analysis
 # histogram
 
 ggplot(films, aes(x = rating)) + 
@@ -444,22 +447,13 @@ Therefore, the odds of a film having a rating higher than 7 with these character
 
 # Conclusions {#sec-Conc}
 
-NOTE THIS SHOULD BE ADDED TO EXPLORATORY ANALYSIS
+In conclusion, in our exploration of what drives IMDb ratings to exceed 7, we've delved into various aspects of films and conducted thorough statistical analyses. Through this process, we've uncovered important insights that illuminate the complex dynamics of the film industry.
 
-```{r}
+Firstly, our analysis has underscored the pivotal role of **budget** allocation in shaping a film's trajectory towards critical acclaim: With each additional million dollars invested, the odds of a film receiving a rating greater than 7 increase significantly, affirming the correlation between financial resources and perceived quality.
 
-library(janitor)
-films$GREAT <- as.factor(films$GREAT)
-films$genre <- as.factor(films$genre)
-levels(films$GREAT) <- c("less rating than 7" , "greater rating than 7")
+Furthermore, **genre** emerges as a salient predictor, with certain genres such as **comedy**, **documentary**, and **short** films exhibiting markedly higher probabilities of garnering elevated ratings. Conversely, genres like **drama** exhibit contrasting patterns, highlighting the diverse preferences and tastes of audiences.
 
+Additionally, factors like release **year** and **film duration** do impact IMDb ratings, but in complex ways. These variables reflect changing audience preferences and cultural trends over time, emphasizing the importance of staying adaptable and innovative in the film industry. For example, as a film's duration increases the odds of it having a rating higher than 7 decrease but only by a very small amount, so we can not say that the longer the film, the worse its ratings are gonna be.
 
-films %>%
-tabyl(genre, GREAT) %>%
-adorn_percentages() %>%
-adorn_pct_formatting() %>%
-adorn_ns() 
-
-
-
+However, it's important to acknowledge that while we've utilized rigorous statistical methods and explored various film attributes, there may still be some limitations. Factors such as sample size, data quality, and potential confounding variables could introduce uncertainty into our findings. Therefore, it's crucial to interpret our results with caution and consider additional factors when film makers make decisions about their movies.
 ```
