@@ -43,7 +43,7 @@ films <- read_csv("dataset08.csv")
 # Removing NA values 
 films <- na.omit(films)
 
-# 1. data summary
+# data summary
 library(gt)
 summary(films)
 films %>%
