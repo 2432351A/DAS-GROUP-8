@@ -262,7 +262,7 @@ Results indicate that a one year change (one unit change) in release multiplies 
 
 ## Log odds and 95% Confidence Intervals
 
-Note that the following work is done with the removal of the variable votes in order to make the model have a better fit. The final optimal model is found here @sec-final-refined-optimal-model
+Note that the following work is done with the removal of the variable votes in order to make the model have a better fit. The final optimal model will be obtained at a later stage.
 ```{r}
 #| echo: false
 #confint(glm1) %>%
@@ -389,7 +389,8 @@ title="Probability of the film rated higher than 7 vs Film duration", ci.lvl=NA)
 ```
 
 The probability plots above provide compelling insights into the influence of budget, genre, and length on the likelihood of a film receiving a rating greater than 7 on IMDb based on our logit model. Notably, budget emerges as a significant predictor, with each additional unit of financial investment substantially increasing the probability of achieving a higher rating. This finding underscores the importance of budget allocation in shaping audience perceptions and critical reception. Furthermore, genre analysis reveals distinct patterns: comedy, documentary, and short films exhibit notably favorable probabilities, suggesting a propensity for audience appeal and critical acclaim. Conversely, drama films present a contrasting scenario, indicating lower probabilities of receiving a higher rating. Finally, film length demonstrates a discernible trend, with shorter films showing slightly higher probabilities of attaining a rating above 7.
-## Final refined optimal model {#sec-final-refined-optimal-model}
+
+### Final refined optimal model 
 
 We will now remove all the genres with the high p-values that are statistically insignificant, and we will create a refined model with the following output:
 
