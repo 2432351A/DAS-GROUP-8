@@ -32,16 +32,16 @@ library(knitr)
 # Exploratory Data Analysis {#sec-EDA}
 
 
-## **Data Summary**
+## Data Summary
 
 ```{r}
 library(tidyverse)
 library(gt)
 library(corrplot)
-films <- read_csv("C:/Users/admin/Desktop/dataset08.csv")
+films <- read_csv("dataset08.csv")
 
-# solve NA (delete the NA rows)
-films <- na.omit(mov)
+# Removing NA values 
+films <- na.omit(films)
 
 # 1. data summary
 library(gt)
@@ -72,7 +72,7 @@ films %>%
   )
 ```
 
-## **Histograms for Numeric Variables**
+## Histograms for Numeric Variables
 
 ```{r}
 #univariate analysis
@@ -83,13 +83,13 @@ ggplot(films, aes(x = rating)) +
   labs(title = "Rating Distribution", x = "IMDB Rating", y = "Count")
 ```
 
-1.The distribution of ratings shows a bimodal trend, with one peak occurring at about 3.8 and the other at about 7.6. This could mean that films are either getting above average ratings or higher ratings, with fewer films getting intermediate ratings.
+-   The distribution of ratings shows a bimodal trend, with one peak occurring at about 3.8 and the other at about 7.6. A bell shape can also be observed around 3.8, indicating a possible normal distribution for films rated lower than 6.
 
-3.Relatively few films received very low (below 2.5) or very high (close to 10) ratings.
+-   Relatively few films received very low (below 2.5) or very high (close to 10) ratings.
 
-4.The number of highly rated films seems to be greater than the number of lowly rated films, probably because IMDB users are more inclined to rate films they like.
+-   The number of highly rated films seems to be greater than the number of lowly rated films, probably because IMDB users are more inclined to rate films they like.
 
-## **Boxplots for Numeric Variables**
+## Boxplots for Numeric Variables
 
 ```{r}
 # boxplot - budget
@@ -99,19 +99,20 @@ p2 <- ggplot(films, aes(x = genre, y = rating, fill = genre)) +  # 在aes()中�
   labs(x = "Genre", y = "Rating", title = "Rating by Genre")
 print(p2)
 ```
+At a first glance it can be observed that documentary and short films receive higher ratings than other films with Comedy and Animation being next. However the size of the boxplots indicate also that there are only a few films belonging in the Documentary and Short genres, with Action, Documentary and Drama genres having most of the outliers out of all of them.
 
-## **Bar chart - genre**
+## Bar chart - genre
 
 ```{r}
 films$rating_category <- ifelse(films$rating >= 7, '7+', 'Below 7')
-ggplot(films1, aes(x=genre, fill=rating_category)) +
+ggplot(films, aes(x=genre, fill=rating_category)) +
   geom_bar() +
   scale_fill_manual(values=c('7+' = 'blue', 'Below 7' = 'skyblue')) +
   theme(axis.text.x = element_text(angle=45, hjust=1)) +
   labs(title="Movie Genre Frequency by Rating Category", x="Genre", y="Count")
 ```
 
-This bar chart shows the frequency distribution of different film genres. According to the chart: The Action and Drama genres have the highest number of films, with Drama having the highest number, followed closely by Action. Documentary and Comedy are relatively few in number.Animation, Romance and Short films are the least numerous, with Short films being the lowest.
+This bar chart shows the frequency distribution of different film genres. According to the chart: The Action and Drama genres have the highest number of films, with Drama having the highest number, followed closely by Action. Documentary and Comedy are relatively few in number.Animation, Romance and Short films are the least numerous, with Short films being the lowest. It can also be observed that based on the number of films in each genre, Comedy and Animation have almost 50% of their films rated above (Animation a bit more than Comedy), the highest BEFORE the Documentary and Short genres where once again it seems that they are the most ahead in terms of ratings. Romance and Drama followed by Action seem to have the lowest success ratio out of them, with success being the film rated 7+.
 
 ## Scatter plots
 
@@ -120,15 +121,18 @@ This bar chart shows the frequency distribution of different film genres. Accord
 ggplot(films, aes(x=budget, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
   scale_color_brewer(palette="Set2") +
-  labs(title="Budget vs. Rating by Genre", x="Budget", y="IMDB Rating")
+  labs(title="Budget vs. Rating by Genre", x="Budget in millions ($)", y="IMDB Rating")
+#Length-rating
 ggplot(films, aes(x=length, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
   scale_color_brewer(palette="Set2") +
-  labs(title="Length vs. Rating by Genre", x="length", y="IMDB Rating")
+  labs(title="Length vs. Rating by Genre", x="length (in minutes)", y="IMDB Rating")
+#Votes-rating
 ggplot(films, aes(x=votes, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
   scale_color_brewer(palette="Set2") +
   labs(title="Votes vs. Rating by Genre", x="votes", y="IMDB Rating")
+#Year-rating
 ggplot(films, aes(x=year, y=rating)) +
   geom_point(aes(color=genre), alpha=0.5) + 
   scale_color_brewer(palette="Set2") +
@@ -136,25 +140,22 @@ ggplot(films, aes(x=year, y=rating)) +
 
 ```
 
-### Budget-rating relationship
+### Budget-rating 
 
-The graph shows the distribution of different types of films (indicated by different colours) in terms of budget and IMDB rating. Overall, there is no obvious direct relationship between budget and IMDB rating, even for films with higher budgets, their ratings cover a wide range from low to high.
+The graph shows no clear linear relationship, between budget and rating. It also shows that most of the movies had a budget between 5 and 17  million ($), and once again based on the coloured points it seems that most of the high rated movies are Documentaries and Animation films.
 
-### Genre distribution
+### Length-rating 
 
-Different genres of films are more widely distributed in terms of budgets and ratings, with no obvious concentration trend. For example, comedies (green dots) and dramas (red dots) are widely distributed throughout the chart.
+Once again no clear linear relationship is observed. It can be observed that the majority of the films have a screening time of  between 50 and 150 minutes.
 
-### Budget ranges
+### Votes-rating
 
-The budgets of most films seem to be concentrated in the lower ranges, even across genres. There are fewer films with higher budgets, and the ratings of these films do not increase significantly as a result of the increase in budget.
+Number of positive votes received by viewers and ratings again show no obvious linear relationship. It is good to not that the most voted films were Action, followed by Drama. This also shows that indeed the popularity of Action and Drama films is the highest among people. However their ratings from IMDB is quite different. 
 
-### Rating ranges
+### Year-rating 
 
-IMDB ratings have a wide range, from close to 2 to over 8. While some films have higher ratings, this is not limited to films with high budgets.
+Again, no clear linear relationship between the two, but it can be observed that as time goes on more and more films are getting released, which makes sense, as the film industry continues to grow every decade, with more and more people wanting to go to movie theaters or even watching them on streaming services like Netflix. 
 
-### Outliers
-
-Some outliers can also be observed in the graph, such as some films with very low budgets but high ratings, or films with very high budgets but poor ratings.
 
 ## Correlation coefficient matrix
 
@@ -168,13 +169,13 @@ corrplot(cor_matrix, method="circle", addCoef.col = "black",  # 添加黑色的�
          tl.srt = 0 )            
 ```
 
--   **Votes and Budget**: There seems to be a moderately strong positive correlation between votes and budget, suggesting that films with larger budgets might also receive more votes, possibly indicating higher viewer engagement or more extensive marketing campaigns.
+From the correlations on the plot above it can be deduced that:
 
--   **Votes and Length**: There appears to be a small to moderate positive correlation, which might suggest that longer films tend to receive more votes. This could reflect a trend that more substantial, possibly more serious films garner more engagement.
+-   **Rating** and **Length** have a moderate negative correlation value of -0.46, indicating that as there is an increase in the movie's screening time (length) in minutes, the rating from IMDB will most likely get lower.
 
--   **Rating and Length**: There is a small negative correlation indicated by a light red color, suggesting that longer films might have slightly lower ratings, but the relationship seems weak.
+-   There seems to be a weak positive correlation of 0.23 between **Budget** and **Rating,** indicating a possible association between them, that we will examine in further stages of our analysis.
 
--   **Rating and Budget**: There seems to be very little to no correlation between budget and rating, indicating that a larger budget does not necessarily correspond to higher ratings.
+-   **All predictors** seem to have low correlations between them so no collinearity (or multicollinearity) can be observed at this time.
 
 ## Kruskal-Wallis Test
 
@@ -185,6 +186,31 @@ kruskal.test(rating ~ genre, data=films) # Kruskal-Wallis test
 ```
 
 According to the Kruskal-Wallis test above, this very small p-value suggests that we have enough evidence to reject this null hypothesis to conclude that there is a significant difference in the ratings of different types of films. In other words, the genre of a film is likely to have an effect on its IMDb rating.
+
+## Table with proportions of films rated higher than 7 based on genres
+```{r}
+library(janitor)
+data <- read.csv("dataset08.csv")
+films <- na.omit(data)
+films$GREAT <- ifelse(films$rating > 7 , 1 ,0)
+levels(films$GREAT) <- c("less rating than 7" , "greater rating than 7")
+films$GREAT <- as.factor(films$GREAT)
+films$genre <- as.factor(films$genre)
+levels(films$GREAT) <- c("less rating than 7" , "greater rating than 7")
+
+
+films %>%
+tabyl(genre, GREAT) %>%
+adorn_percentages() %>%
+adorn_pct_formatting() %>%
+adorn_ns() %>%
+  gt() %>%
+  fmt_number(decimals = 2) 
+  
+
+
+```
+This table confirms what we have seen above, with the Documentary films having 92.6% of their films rated 7+, and Short films 98.5%. In contrast,  Drama and Romance are the worst performing genres with 5.5% and 0% respectively.
 
 # Formal Data Analysis {#sec-FDA}
 
